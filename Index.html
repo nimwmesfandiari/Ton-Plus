@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TON Plus</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Tahoma, sans-serif;
+    }
+
+    :root {
+      --primary: #0088cc;
+      --secondary: #00a884;
+      --accent: #ff9f00;
+      --bg: #0f1525;
+      --card: rgba(25, 35, 60, 0.9);
+      --text: #fff;
+      --muted: #9aa3b2;
+      --shadow: 0 8px 32px rgba(0,0,0,.35);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ====== PAGES ====== */
+    .page {
+      flex: 1;
+      display: none;
+      padding: 30px 20px 90px;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 22px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      max-width: 360px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    /* ====== MINE ====== */
+    #balance {
+      font-size: 34px;
+      font-weight: bold;
+      margin: 25px 0;
+      color: var(--accent);
+      transition: transform .15s ease;
+    }
+
+    #mine-btn {
+      width: 100%;
+      padding: 18px;
+      font-size: 20px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    #mine-btn:active {
+      transform: scale(.95);
+    }
+
+    /* ====== BOTTOM NAV ====== */
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: rgba(15, 21, 37, .95);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+
+    .nav button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .nav button.active {
+      color: var(--primary);
+    }
+
+    .text {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HOME -->
+  <div id="home" class="page active">
+    <div class="card">
+      <h1>⛏ ماین TON</h1>
+      <div id="balance">0.000000 TON</div>
+      <button id="mine-btn">Mine</button>
+      <p class="text" style="margin-top:15px">هر ضربه = +0.0001 TON</p>
+    </div>
+  </div>
+
+  <!-- WALLET -->
+  <div id="wallet" class="page">
+    <div class="card">
+      <h1>💼 کیف پول</h1>
+      <p class="text">موجودی فعلی شما:</p>
+      <div id="wallet-balance" style="font-size:26px;margin-top:15px"></div>
+    </div>
+  </div>
+
+  <!-- FRIENDS -->
+  <div id="friends" class="page">
+    <div class="card">
+      <h1>👥 رفرال</h1>
+      <p class="text">لینک دعوت (آماده اتصال به تلگرام)</p>
+      <p class="text" style="margin-top:15px">به‌زودی فعال می‌شود</p>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div id="tasks" class="page">
+    <div class="card">
+      <h1>🎯 تسک‌ها</h1>
+      <p class="text">ماموریت‌ها به‌زودی اضافه می‌شوند</p>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <button onclick="showPage('home')" class="active">Home</button>
+    <button onclick="showPage('wallet')">Wallet</button>
+    <button onclick="showPage('friends')">Friends</button>
+    <button onclick="showPage('tasks')">Tasks</button>
+  </div>
+
+  <script>
+    /* ====== PAGE SWITCH ====== */
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+
+      document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (id === "wallet") {
+        walletBalance.textContent = balance.toFixed(6) + " TON";
+      }
+    }
+
+    /* ====== MINE ====== */
+    let balance = 0;
+    const saved = localStorage.getItem("ton_balance");
+    if (saved) balance = parseFloat(saved);
+
+    const balanceEl = document.getElementById("balance");
+    const walletBalance = document.getElementById("wallet-balance");
+    const mineBtn = document.getElementById("mine-btn");
+
+    function render() {
+      balanceEl.textContent = balance.toFixed(6) + " TON";
+      balanceEl.style.transform = "scale(1.1)";
+      setTimeout(() => balanceEl.style.transform = "scale(1)", 120);
+    }
+
+    render();
+
+    mineBtn.addEventListener("click", () => {
+      balance += 0.0001;
+      localStorage.setItem("ton_balance", balance);
+      render();
+    });
+  </script>
+
+</body>
+</html>
